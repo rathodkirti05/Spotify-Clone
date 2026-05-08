@@ -1,0 +1,20 @@
+.app {
+  display: flex;
+  height: 100vh;
+  background-color: #121212;
+  color: white;
+  font-family: Arial;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background-color: #000;
+  padding: 20px;
+}
+
+/* Main area */
+.main {
+  flex: 1;
+  padding: 20px;
+}
