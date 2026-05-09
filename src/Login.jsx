@@ -11,7 +11,9 @@ import {
 import { auth } from "./firebase";
 
 function Login() {
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -47,6 +49,7 @@ const navigate = useNavigate();
     } catch (error) {
 
       alert(error.message);
+
     }
   };
 
@@ -64,9 +67,12 @@ const navigate = useNavigate();
 
       alert("Login Success ✅");
 
+      navigate("/trending");
+
     } catch (error) {
 
       alert(error.message);
+
     }
   };
 
@@ -77,8 +83,9 @@ const navigate = useNavigate();
     await signOut(auth);
 
     alert("Logout Success ✅");
+
   };
-navigate("/trending");
+
   return (
 
     <div
@@ -137,7 +144,8 @@ navigate("/trending");
             marginBottom: "18px",
             background: "#222",
             color: "white",
-            fontSize: "16px"
+            fontSize: "16px",
+            outline: "none"
           }}
         />
 
@@ -154,7 +162,8 @@ navigate("/trending");
             marginBottom: "20px",
             background: "#222",
             color: "white",
-            fontSize: "16px"
+            fontSize: "16px",
+            outline: "none"
           }}
         />
 
