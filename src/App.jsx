@@ -1,6 +1,10 @@
 // App.jsx
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
 
 import Login from "./Login";
 
@@ -9,12 +13,7 @@ import Trending from "./pages/Trending";
 import Playlist from "./pages/Playlist";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
-import ProtectedRoute from "./ProtectedRoute";
-import {
-BrowserRouter,
-Routes,
-Route
-} from "react-router-dom";
+
 function App() {
 
   return (
@@ -25,24 +24,46 @@ function App() {
 
         {/* LOGIN PAGE */}
 
-       <Route path="/" element={<Login />} />
-        {/* HOME */}
+        <Route
+          path="/"
+          element={<Login />}
+        />
 
-        <Route path="/home" element={<Home />} />
-        {/* About us */}
-<Route path="/about" element={<About />} />
-        {/* TRENDING */}
+        {/* HOME PAGE */}
 
-        <Route path="/trending" element={<Trending />} />
+        <Route
+          path="/home"
+          element={<Home />}
+        />
 
+        {/* TRENDING PAGE */}
 
-        {/* PLAYLIST */}
+        <Route
+          path="/trending"
+          element={<Trending />}
+        />
 
-       <Route path="/playlist" element={<Playlist />} />
+        {/* PLAYLIST PAGE */}
 
-        {/* CONTACT */}
+        <Route
+          path="/playlist"
+          element={<Playlist />}
+        />
 
-       <Route path="/contact" element={<Contact />} />
+        {/* CONTACT PAGE */}
+
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
+
+        {/* ABOUT PAGE */}
+
+        <Route
+          path="/about"
+          element={<About />}
+        />
+
       </Routes>
 
     </BrowserRouter>
