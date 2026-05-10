@@ -10,6 +10,11 @@ import Playlist from "./pages/Playlist";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import ProtectedRoute from "./ProtectedRoute";
+import {
+BrowserRouter,
+Routes,
+Route
+} from "react-router-dom";
 function App() {
 
   return (
