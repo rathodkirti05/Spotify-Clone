@@ -1,11 +1,26 @@
-import { useNavigate } from "react-router-dom"
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-import Header from "../components/Header"
-import Footer from "../components/Footer"
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Home() {
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  // PROTECTED PAGE
+
+  useEffect(() => {
+
+    const user =
+      sessionStorage.getItem("user");
+
+    if (!user) {
+
+      window.location.href = "/";
+    }
+
+  }, []);
 
   return (
 
@@ -28,7 +43,9 @@ function Home() {
           </p>
 
           <button
-            onClick={() => navigate("/trending")}
+            onClick={() =>
+              navigate("/trending")
+            }
           >
             Explore Music
           </button>
@@ -60,7 +77,7 @@ function Home() {
           </h2>
 
           <p>
-            Create and enjoy your playlists
+            Create and enjoy playlists
           </p>
 
         </div>
@@ -82,7 +99,7 @@ function Home() {
       <Footer />
 
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;

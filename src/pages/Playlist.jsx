@@ -1,25 +1,38 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react";
 
-import Header from "../components/Header"
-import Footer from "../components/Footer"
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Playlist() {
 
-  const [songs, setSongs] = useState([])
+    
+  const [songs, setSongs] = useState([]);
 
-  const [search, setSearch] = useState("english")
+  const [search, setSearch] = useState("atif");
 
-  const [play, setPlay] = useState(false)
+  const [play, setPlay] = useState(false);
 
-  const [currentSong, setCurrentSong] = useState("")
+  const [currentSong, setCurrentSong] = useState("");
 
-  const [currentArtist, setCurrentArtist] = useState("")
+  const [currentArtist, setCurrentArtist] = useState("");
 
-  const [currentImage, setCurrentImage] = useState("")
+  const [currentImage, setCurrentImage] = useState("");
 
-  const [activeIndex, setActiveIndex] = useState(null)
+  const [activeIndex, setActiveIndex] = useState(null);
 
-  const audioRef = useRef(new Audio())
+  const audioRef = useRef(new Audio());
+
+  useEffect(() => {
+
+  const user =
+    sessionStorage.getItem("user");
+
+  if (!user) {
+
+    window.location.href = "/";
+  }
+
+}, []);
 
   // FETCH SONGS
 
@@ -32,10 +45,11 @@ function Playlist() {
 
       .then((data) => {
 
-        setSongs(data.results)
-      })
+        setSongs(data.results);
 
-  }, [search])
+      });
+
+  }, [search]);
 
   // PLAY SONG
 
@@ -45,88 +59,99 @@ function Playlist() {
 
     if (activeIndex === index && play) {
 
-      audioRef.current.pause()
+      audioRef.current.pause();
 
-      setPlay(false)
+      setPlay(false);
 
-      return
+      return;
     }
 
     if (activeIndex === index && !play) {
 
-      audioRef.current.play()
+      audioRef.current.play();
 
-      setPlay(true)
+      setPlay(true);
 
-      return
+      return;
     }
 
     // NEW SONG
 
-    audioRef.current.pause()
+    audioRef.current.pause();
 
-    audioRef.current = new Audio(item.previewUrl)
+    audioRef.current =
+      new Audio(item.previewUrl);
 
-    audioRef.current.play()
+    audioRef.current.play();
 
-    setPlay(true)
+    setPlay(true);
 
-    setCurrentSong(item.trackName)
+    setCurrentSong(item.trackName);
 
-    setCurrentArtist(item.artistName)
+    setCurrentArtist(item.artistName);
 
-    setCurrentImage(item.artworkUrl100)
+    setCurrentImage(item.artworkUrl100);
 
-    setActiveIndex(index)
-  }
+    setActiveIndex(index);
+
+    // AUTO NEXT SONG
+
+    audioRef.current.onended = () => {
+
+      nextSong();
+    };
+  };
 
   // PLAY / PAUSE BUTTON
 
   const togglePlay = () => {
 
-    if (!currentSong) return
+    if (!currentSong) return;
 
     if (play) {
 
-      audioRef.current.pause()
+      audioRef.current.pause();
 
-      setPlay(false)
+      setPlay(false);
 
     } else {
 
-      audioRef.current.play()
+      audioRef.current.play();
 
-      setPlay(true)
+      setPlay(true);
     }
-  }
+  };
 
   // NEXT SONG
 
   const nextSong = () => {
 
-    let next = activeIndex + 1
+    if (songs.length === 0) return;
 
-    if (next >= songs.length) {
+    const nextIndex =
+      (activeIndex + 1) % songs.length;
 
-      next = 0
-    }
-
-    playSong(songs[next], next)
-  }
+    playSong(
+      songs[nextIndex],
+      nextIndex
+    );
+  };
 
   // PREVIOUS SONG
 
   const prevSong = () => {
 
-    let prev = activeIndex - 1
+    if (songs.length === 0) return;
 
-    if (prev < 0) {
+    const prevIndex =
+      (activeIndex - 1 + songs.length)
+      % songs.length;
 
-      prev = songs.length - 1
-    }
-
-    playSong(songs[prev], prev)
-  }
+    playSong(
+      songs[prevIndex],
+      prevIndex
+    );
+  };
 
   return (
 
@@ -151,7 +176,9 @@ function Playlist() {
           placeholder="Search playlist songs..."
           className="search-box"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
         />
 
         {/* SONG CARDS */}
@@ -162,7 +189,9 @@ function Playlist() {
 
             <div
               className={`playlist-card ${
-                activeIndex === index ? "active" : ""
+                activeIndex === index
+                  ? "active"
+                  : ""
               }`}
               key={index}
             >
@@ -171,11 +200,16 @@ function Playlist() {
 
               <div
                 className="card-image"
-                onClick={() => playSong(item, index)}
+                onClick={() =>
+                  playSong(item, index)
+                }
               >
 
                 <img
-                  src={item.artworkUrl100.replace("100x100", "600x600")}
+                  src={item.artworkUrl100.replace(
+                    "100x100",
+                    "600x600"
+                  )}
                   alt=""
                 />
 
@@ -183,9 +217,12 @@ function Playlist() {
 
                 <button className="play-btn">
 
-                  {play && activeIndex === index
-                    ? "⏸"
-                    : "▶"}
+                  {
+                    play &&
+                    activeIndex === index
+                      ? "⏸"
+                      : "▶"
+                  }
 
                 </button>
 
@@ -213,6 +250,8 @@ function Playlist() {
 
       <div className="player">
 
+        {/* LEFT */}
+
         <div className="left-player">
 
           <img
@@ -226,7 +265,10 @@ function Playlist() {
           <div>
 
             <h4>
-              {currentSong || "No song playing"}
+              {
+                currentSong ||
+                "No song playing"
+              }
             </h4>
 
             <p>
@@ -242,15 +284,21 @@ function Playlist() {
         <div className="controls">
 
           <button onClick={prevSong}>
-            ⏮
+            ⏮ Prev
           </button>
 
           <button onClick={togglePlay}>
-            {play ? "⏸ Pause" : "▶ Play"}
+
+            {
+              play
+                ? "⏸ Pause"
+                : "▶ Play"
+            }
+
           </button>
 
           <button onClick={nextSong}>
-            ⏭
+            Next ⏭
           </button>
 
         </div>
@@ -262,7 +310,7 @@ function Playlist() {
       <Footer />
 
     </div>
-  )
+  );
 }
 
-export default Playlist
+export default Playlist;

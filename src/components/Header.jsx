@@ -1,6 +1,24 @@
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 
 function Header() {
+
+  // THEME TOGGLE
+
+  const toggleTheme = () => {
+
+    document.body.classList.toggle("light-mode");
+
+  };
+
+  // LOGOUT
+
+  const logout = () => {
+
+    sessionStorage.removeItem("user");
+
+    window.location.href = "/";
+
+  };
 
   return (
 
@@ -8,18 +26,20 @@ function Header() {
 
       {/* LOGO */}
 
-      <div className="logo">
-
+      <h1 className="logo">
         SpotifyX 🎵
-
-      </div>
+      </h1>
 
       {/* MENU */}
 
       <nav className="menu">
 
-        <Link to="/">
+        <Link to="/home">
           Home
+        </Link>
+
+        <Link to="/about">
+          About
         </Link>
 
         <Link to="/trending">
@@ -36,9 +56,38 @@ function Header() {
 
       </nav>
 
-    </header>
+      {/* RIGHT BUTTONS */}
 
-  )
+      <div
+        style={{
+          display:"flex",
+          gap:"15px",
+          alignItems:"center"
+        }}
+      >
+
+        {/* THEME BUTTON */}
+
+        <button
+          className="theme-btn"
+          onClick={toggleTheme}
+        >
+          🌙
+        </button>
+
+        {/* LOGOUT */}
+
+        <button
+          className="logout-btn"
+          onClick={logout}
+        >
+          ↪
+        </button>
+
+      </div>
+
+    </header>
+  );
 }
 
-export default Header
+export default Header;

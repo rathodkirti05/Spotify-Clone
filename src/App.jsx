@@ -1,15 +1,15 @@
+// App.jsx
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Login from "./Login";
 
 import Home from "./pages/Home";
 import Trending from "./pages/Trending";
 import Playlist from "./pages/Playlist";
 import Contact from "./pages/Contact";
-
-import Login from "./Login";
+import About from "./pages/About";
 import ProtectedRoute from "./ProtectedRoute";
-
-import "./index.css";
-
 function App() {
 
   return (
@@ -18,53 +18,26 @@ function App() {
 
       <Routes>
 
+        {/* LOGIN PAGE */}
+
+       <Route path="/" element={<Login />} />
         {/* HOME */}
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
-
-        {/* LOGIN */}
-
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
+        <Route path="/home" element={<Home />} />
+        {/* About us */}
+<Route path="/about" element={<About />} />
         {/* TRENDING */}
 
-        <Route
-          path="/trending"
-          element={
-            <ProtectedRoute>
-              <Trending />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/trending" element={<Trending />} />
+
 
         {/* PLAYLIST */}
 
-        <Route
-          path="/playlist"
-          element={
-            <ProtectedRoute>
-              <Playlist />
-            </ProtectedRoute>
-          }
-        />
+       <Route path="/playlist" element={<Playlist />} />
 
         {/* CONTACT */}
 
-        <Route
-          path="/contact"
-          element={
-            <ProtectedRoute>
-              <Contact />
-            </ProtectedRoute>
-          }
-        />
-
+       <Route path="/contact" element={<Contact />} />
       </Routes>
 
     </BrowserRouter>

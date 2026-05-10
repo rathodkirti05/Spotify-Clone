@@ -1,225 +1,256 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
+  signInWithPopup
 } from "firebase/auth";
 
-import { auth } from "./firebase";
+import {
+  auth,
+  googleProvider
+} from "./firebase";
+
+import "./App.css";
 
 function Login() {
 
-  const navigate = useNavigate();
+  const [email, setEmail] =
+    useState("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [password, setPassword] =
+    useState("");
 
-  // USER CHECK
+  // =========================
+  // MOCKAPI URL
+  // =========================
 
-  useEffect(() => {
+  const API =
+    "https://6a0041582b7ab34960302c69.mockapi.io/users";
 
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-
-      setUser(currentUser);
-
-    });
-
-    return () => unsubscribe();
-
-  }, []);
-
+  // =========================
   // SIGNUP
+  // =========================
 
   const signup = async () => {
 
+    if (!email || !password) {
+
+      alert("Enter Email & Password");
+
+      return;
+    }
+
     try {
 
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
+      // FIREBASE SIGNUP
+
+      const userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      // SAVE IN SESSION
+
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify(userCredential.user)
       );
 
-      alert("Account Created ✅");
+      // SAVE IN MOCKAPI
+
+      await fetch(API, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+          "application/json"
+        },
+
+        body: JSON.stringify({
+
+          email: email,
+
+          password: password
+        })
+      });
+
+      alert("Signup Success ✅");
+
+      window.location.href =
+        "/home";
 
     } catch (error) {
 
       alert(error.message);
-
     }
   };
 
+  // =========================
   // LOGIN
+  // =========================
 
   const login = async () => {
 
+    if (!email || !password) {
+
+      alert("Enter Email & Password");
+
+      return;
+    }
+
     try {
 
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
+      // FIREBASE LOGIN
+
+      const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify(userCredential.user)
       );
 
       alert("Login Success ✅");
 
-      navigate("/trending");
+      window.location.href =
+        "/home";
 
     } catch (error) {
 
       alert(error.message);
-
     }
   };
 
-  // LOGOUT
+  // =========================
+  // GOOGLE LOGIN
+  // =========================
 
-  const logout = async () => {
+  const googleLogin = async () => {
 
-    await signOut(auth);
+    try {
 
-    alert("Logout Success ✅");
+      const result =
+        await signInWithPopup(
+          auth,
+          googleProvider
+        );
 
+      sessionStorage.setItem(
+        "user",
+        JSON.stringify(result.user)
+      );
+
+      // SAVE GOOGLE USER IN MOCKAPI
+
+      await fetch(API, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type":
+          "application/json"
+        },
+
+        body: JSON.stringify({
+
+          email:
+            result.user.email,
+
+          password:
+            "Google Login"
+        })
+      });
+
+      alert(
+        "Google Login Success ✅"
+      );
+
+      window.location.href =
+        "/home";
+
+    } catch (error) {
+
+      alert(error.message);
+    }
   };
 
   return (
 
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "#111"
-      }}
-    >
+    <div className="login-page">
 
-      <div
-        style={{
-          width: "420px",
-          background: "#181818",
-          padding: "40px",
-          borderRadius: "20px",
-          textAlign: "center"
-        }}
-      >
+      <div className="login-box">
 
-        <h1
-          style={{
-            color: "#1db954",
-            marginBottom: "25px",
-            fontSize: "50px"
-          }}
-        >
-          SpotifyX
-        </h1>
+        <h1>SpotifyX 🎵</h1>
 
-        {
-          user && (
-            <h3
-              style={{
-                color: "white",
-                marginBottom: "20px"
-              }}
-            >
-              Welcome {user.email}
-            </h3>
-          )
-        }
+        <p>
+          Login to continue music world
+        </p>
 
-        <input
-          type="email"
-          placeholder="Enter Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "16px",
-            border: "none",
-            borderRadius: "12px",
-            marginBottom: "18px",
-            background: "#222",
-            color: "white",
-            fontSize: "16px",
-            outline: "none"
-          }}
-        />
+        <form>
 
-        <input
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "16px",
-            border: "none",
-            borderRadius: "12px",
-            marginBottom: "20px",
-            background: "#222",
-            color: "white",
-            fontSize: "16px",
-            outline: "none"
-          }}
-        />
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e)=>
+              setEmail(e.target.value)
+            }
+          />
 
-        <button
-          onClick={signup}
-          style={{
-            width: "100%",
-            padding: "15px",
-            border: "none",
-            borderRadius: "40px",
-            background: "#1db954",
-            color: "white",
-            fontSize: "18px",
-            marginBottom: "15px",
-            cursor: "pointer"
-          }}
-        >
-          Signup
-        </button>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e)=>
+              setPassword(e.target.value)
+            }
+          />
 
-        <button
-          onClick={login}
-          style={{
-            width: "100%",
-            padding: "15px",
-            border: "none",
-            borderRadius: "40px",
-            background: "white",
-            color: "black",
-            fontSize: "18px",
-            marginBottom: "15px",
-            cursor: "pointer"
-          }}
-        >
-          Login
-        </button>
+          <button
+            type="button"
+            className="signup-btn"
+            onClick={signup}
+          >
+            Signup
+          </button>
 
-        {
-          user && (
-            <button
-              onClick={logout}
-              style={{
-                width: "100%",
-                padding: "15px",
-                border: "none",
-                borderRadius: "40px",
-                background: "red",
-                color: "white",
-                fontSize: "18px",
-                cursor: "pointer"
-              }}
-            >
-              Logout
-            </button>
-          )
-        }
+          <button
+            type="button"
+            className="login-btn"
+            onClick={login}
+          >
+            Login
+          </button>
+
+          <button
+            type="button"
+            className="google-btn"
+            onClick={googleLogin}
+          >
+            Continue With Google
+          </button>
+
+        </form>
+
+        <div className="login-links">
+
+          <a href="">
+            Forgot Password?
+          </a>
+
+          <a href="">
+            Create Account
+          </a>
+
+        </div>
 
       </div>
 

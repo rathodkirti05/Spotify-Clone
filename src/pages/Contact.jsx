@@ -1,17 +1,101 @@
-import Header from "../components/Header"
-import Footer from "../components/Footer"
+import { useEffect, useState } from "react";
+
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 function Contact() {
+
+  // STATES
+
+  const [name, setName] =
+    useState("");
+
+  const [email, setEmail] =
+    useState("");
+
+  const [message, setMessage] =
+    useState("");
+
+  // PROTECTED PAGE
+
+  useEffect(() => {
+
+    const user =
+      sessionStorage.getItem("user");
+
+    if (!user) {
+
+      window.location.href = "/";
+    }
+
+  }, []);
+
+  // SUBMIT
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    // VALIDATION
+
+    if (!name || !email || !message) {
+
+      alert("Please Fill All Fields");
+
+      return;
+    }
+
+    const data = {
+      name,
+      email,
+      message
+    };
+
+    try {
+
+      // MOCKAPI URL
+
+      const response =
+        await fetch(
+          "https://6a0041582b7ab34960302c69.mockapi.io/messages",
+          {
+            method:"POST",
+
+            headers:{
+              "Content-Type":
+              "application/json"
+            },
+
+            body:JSON.stringify(data)
+          }
+        );
+
+      if (response.ok) {
+
+        alert("Message Sent ✅");
+
+        setName("");
+        setEmail("");
+        setMessage("");
+
+      } else {
+
+        alert("Failed To Send ❌");
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert("Server Error ❌");
+    }
+  };
 
   return (
 
     <div>
 
-      {/* HEADER */}
-
       <Header />
-
-      {/* CONTACT PAGE */}
 
       <div className="contact-page">
 
@@ -22,25 +106,37 @@ function Contact() {
           </h1>
 
           <p>
-            Have any questions? Feel free to contact us.
+            Send your feedback and queries
           </p>
 
-          {/* FORM */}
-
-          <form>
+          <form
+            onSubmit={handleSubmit}
+          >
 
             <input
               type="text"
-              placeholder="Enter Your Name"
+              placeholder="Enter Name"
+              value={name}
+              onChange={(e)=>
+                setName(e.target.value)
+              }
             />
 
             <input
               type="email"
-              placeholder="Enter Your Email"
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e)=>
+                setEmail(e.target.value)
+              }
             />
 
             <textarea
-              placeholder="Enter Your Message"
+              placeholder="Enter Message"
+              value={message}
+              onChange={(e)=>
+                setMessage(e.target.value)
+              }
             ></textarea>
 
             <button type="submit">
@@ -53,12 +149,10 @@ function Contact() {
 
       </div>
 
-      {/* FOOTER */}
-
       <Footer />
 
     </div>
-  )
+  );
 }
 
-export default Contact
+export default Contact;

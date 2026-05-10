@@ -1,54 +1,17 @@
-import { useEffect, useState } from "react";
+// src/components/ProtectedRoute.jsx
 
 import { Navigate } from "react-router-dom";
 
-import { onAuthStateChanged } from "firebase/auth";
-
-import { auth } from "./firebase";
-
 function ProtectedRoute({ children }) {
 
-  const [user, setUser] = useState(undefined);
-
-  useEffect(() => {
-
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-
-      setUser(currentUser);
-
-    });
-
-    return () => unsubscribe();
-
-  }, []);
-
-  // LOADING
-
-  if (user === undefined) {
-
-    return (
-
-      <h1
-        style={{
-          color: "white",
-          textAlign: "center",
-          marginTop: "200px"
-        }}
-      >
-        Loading...
-      </h1>
-
-    );
-  }
-
-  // NOT LOGIN
+  const user =
+    localStorage.getItem("spotifyUser");
 
   if (!user) {
 
-    return <Navigate to="/login" />;
-  }
+    return <Navigate to="/" />;
 
-  // LOGIN SUCCESS
+  }
 
   return children;
 }

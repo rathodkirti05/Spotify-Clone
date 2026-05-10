@@ -24,6 +24,10 @@ function Footer() {
             Home
           </Link>
 
+           <Link to="/about">
+    About
+  </Link>
+
           <Link to="/trending">
             Trending
           </Link>
